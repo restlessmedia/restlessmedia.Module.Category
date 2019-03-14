@@ -1,5 +1,5 @@
 ﻿using restlessmedia.Module.Category;
-using System.Data;
+using restlessmedia.Module.Data;
 
 namespace Dapper
 {
@@ -11,12 +11,7 @@ namespace Dapper
       parameters.Add("description", category.Description);
       parameters.Add("categoryParentId", category.CategoryParentId);
       parameters.Add("rank", category.Rank);
-      AddId(parameters, "categoryId", category.CategoryId);
-    }
-
-    public static void AddId(this DynamicParameters parameters, string name, int? value)
-    {
-      parameters.Add(name, value, DbType.Int32, ParameterDirection.InputOutput, 4);
+      parameters.AddId("categoryId", category.CategoryId);
     }
   }
 }
