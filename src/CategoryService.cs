@@ -4,7 +4,7 @@ using System;
 
 namespace restlessmedia.Module.Category
 {
-  public sealed class CategoryService : ICategoryService
+  internal sealed class CategoryService : ICategoryService
   {
     public CategoryService(IEntityService entityService, IFileService fileService, ICategoryDataProvider categoryDataProvider, ICacheProvider cacheProvider)
       : base()
