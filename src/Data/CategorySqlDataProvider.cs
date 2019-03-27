@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using restlessmedia.Module.Data;
+using restlessmedia.Module.Data.Sql;
 using restlessmedia.Module.File;
-using restlessmedia.Module.Security.Data.Sql;
 using SqlBuilder.DataServices;
 using System.Data;
 using System.Linq;
@@ -17,13 +17,13 @@ namespace restlessmedia.Module.Category.Data
     {
       return Query((connection) =>
       {
-        return new ModelCollection<CategoryEntity>(connection.Query<CategoryEntity, FileEntity, CategoryEntity>("dbo.SPListCategories", (category, file) => { category.Thumb = file; return category; }, new { categoryParentId = categoryParentId }, commandType: CommandType.StoredProcedure, splitOn: "TargetEntityId"));
+        return new ModelCollection<CategoryEntity>(connection.Query<CategoryEntity, FileEntity, CategoryEntity>("dbo.SPListCategories", (category, file) => { category.Thumb = file; return category; }, new { categoryParentId }, commandType: CommandType.StoredProcedure, splitOn: "TargetEntityId"));
       });
     }
 
     public CategoryEntity Read(int categoryId)
     {
-      using (IGridReader reader = QueryMultiple("dbo.SPReadCategory", new { categoryId = categoryId }))
+      using (IGridReader reader = QueryMultiple("dbo.SPReadCategory", new { categoryId }))
       {
         CategoryEntity category = reader.Read<CategoryEntity>().SingleOrDefault();
         category.Thumb = reader.Read<FileEntity>().FirstOrDefault();
@@ -42,7 +42,7 @@ namespace restlessmedia.Module.Category.Data
 
     public void Delete(int categoryId)
     {
-      Execute("dbo.SPDeleteCategory", new { categoryId = categoryId });
+      Execute("dbo.SPDeleteCategory", new { categoryId });
     }
 
     public bool Delete(int categoryId, out CategoryEntity category)
@@ -52,7 +52,7 @@ namespace restlessmedia.Module.Category.Data
 
       if (exists)
       {
-        Execute("dbo.SPDeleteCategory", new { categoryId = categoryId });
+        Execute("dbo.SPDeleteCategory", new { categoryId });
       }
 
       return exists;
