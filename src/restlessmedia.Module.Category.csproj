@@ -70,8 +70,8 @@
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="restlessmedia.Module, Version=0.35.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\restlessmedia.Module.0.35.0\lib\net452\restlessmedia.Module.dll</HintPath>
+    <Reference Include="restlessmedia.Module, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\restlessmedia.Module.1.0.0\lib\net452\restlessmedia.Module.dll</HintPath>
     </Reference>
     <Reference Include="restlessmedia.Module.Data.EF, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\restlessmedia.Module.Data.EF.0.1.0\lib\net452\restlessmedia.Module.Data.EF.dll</HintPath>
@@ -124,7 +124,9 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="restlessmedia.Module.Category.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
