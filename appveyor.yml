@@ -2,8 +2,8 @@ version: 1.0.{build}
 image: Visual Studio 2017
 cache: packages -> **\packages.config
 nuget:
-  account_feed: true
-  project_feed: true
+  account_feed: false
+  project_feed: false
 before_build:
 - cmd: nuget restore
 install:
