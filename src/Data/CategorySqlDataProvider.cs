@@ -1,34 +1,42 @@
 ﻿using Dapper;
+using FastMapper;
+using restlessmedia.Module.Configuration;
 using restlessmedia.Module.Data;
 using restlessmedia.Module.Data.Sql;
 using restlessmedia.Module.File;
+using SqlBuilder;
 using SqlBuilder.DataServices;
-using System.Data;
+using System;
+using System.Dynamic;
 using System.Linq;
 
 namespace restlessmedia.Module.Category.Data
 {
   public abstract class CategorySqlDataProvider : SqlDataProviderBase
   {
-    public CategorySqlDataProvider(IDataContext context)
-      : base(context) { }
+    public CategorySqlDataProvider(IDataContext context, IModelDataService<DataModel.VCategory> modelDataService)
+      : base(context)
+    {
+      _modelDataService = modelDataService ?? throw new ArgumentNullException(nameof(modelDataService));
+    }
 
     public ModelCollection<CategoryEntity> List(int categoryParentId)
     {
-      return Query((connection) =>
-      {
-        return new ModelCollection<CategoryEntity>(connection.Query<CategoryEntity, FileEntity, CategoryEntity>("dbo.SPListCategories", (category, file) => { category.Thumb = file; return category; }, new { categoryParentId }, commandType: CommandType.StoredProcedure, splitOn: "TargetEntityId"));
-      });
+      Select<DataModel.VCategory> select = _modelDataService.DataProvider.NewSelect();
+      select.Where(x => x.CategoryParentId, categoryParentId);
+      DataPage<dynamic> dataPage = _modelDataService.DataProvider.QueryPage<dynamic>(select, connection => select.WithLicenseId(connection, DataContext.LicenseSettings));
+      return new ModelCollection<CategoryEntity>(ObjectMapper.MapAll<CategoryEntity>(dataPage.Data), dataPage.Count);
     }
 
     public CategoryEntity Read(int categoryId)
     {
-      using (IGridReader reader = QueryMultiple("dbo.SPReadCategory", new { categoryId }))
+      Select<DataModel.VCategory> select = _modelDataService.DataProvider.NewSelect();
+      select.Where(x => x.CategoryId, categoryId);
+      IDynamicMetaObjectProvider category = _modelDataService.DataProvider.QueryDynamic(select, connection => select.WithLicenseId(connection, DataContext.LicenseSettings)).FirstOrDefault();
+      return ObjectMapper.Map<IDynamicMetaObjectProvider, CategoryEntity>(category, config =>
       {
-        CategoryEntity category = reader.Read<CategoryEntity>().SingleOrDefault();
-        category.Thumb = reader.Read<FileEntity>().FirstOrDefault();
-        return category;
-      }
+        config.For(x => x.Thumb).ResolveWith<FileEntity>();
+      });
     }
 
     public void Save(CategoryEntity category)
@@ -42,6 +50,9 @@ namespace restlessmedia.Module.Category.Data
 
     public void Delete(int categoryId)
     {
+      //Delete<DataModel.VCategory> delete = new Delete<DataModel.VCategory>(categoryId);
+      //_modelDataService.DataProvider.Execute(delete);
+
       Execute("dbo.SPDeleteCategory", new { categoryId });
     }
 
@@ -52,10 +63,12 @@ namespace restlessmedia.Module.Category.Data
 
       if (exists)
       {
-        Execute("dbo.SPDeleteCategory", new { categoryId });
+        Delete(categoryId);
       }
 
       return exists;
     }
+
+    private readonly IModelDataService<DataModel.VCategory> _modelDataService;
   }
 }

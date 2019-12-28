@@ -1,7 +1,7 @@
 src/bin
 src/obj
-src/bin
-src/obj
 .DS_Store
 .vs
 packages/**/*
+/restlessmedia.Module.Category.UnitTest/bin
+/restlessmedia.Module.Category.UnitTest/obj
