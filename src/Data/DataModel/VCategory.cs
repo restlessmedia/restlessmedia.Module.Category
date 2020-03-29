@@ -23,6 +23,8 @@ namespace restlessmedia.Module.Category.Data.DataModel
     [ReadOnly(true)]
     public int? LicenseId { get; set; }
 
-    public string Thumb { get; set; }
+    public string SystemFileName { get; set; }
+
+    public string FileName { get; set; }
   }
 }
