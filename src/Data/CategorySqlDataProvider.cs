@@ -32,8 +32,8 @@ namespace restlessmedia.Module.Category.Data
     {
       Select<DataModel.VCategory> select = _modelDataService.DataProvider.NewSelect();
       select.Where(x => x.CategoryId, categoryId);
-      IDynamicMetaObjectProvider category = _modelDataService.DataProvider.QueryDynamic(select, connection => select.WithLicenseId(connection, DataContext.LicenseSettings)).FirstOrDefault();
-      return ObjectMapper.Map<IDynamicMetaObjectProvider, CategoryEntity>(category, config =>
+      IDynamicMetaObjectProvider dynamicCategory = _modelDataService.DataProvider.QueryDynamic(select, connection => select.WithLicenseId(connection, DataContext.LicenseSettings)).FirstOrDefault();
+      return ObjectMapper.Map<IDynamicMetaObjectProvider, CategoryEntity>(dynamicCategory, config =>
       {
         config.For(x => x.Thumb).ResolveWith<FileEntity>();
       });
