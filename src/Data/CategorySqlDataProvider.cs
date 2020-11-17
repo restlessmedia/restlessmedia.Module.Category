@@ -5,6 +5,7 @@ using restlessmedia.Module.File;
 using SqlBuilder;
 using SqlBuilder.DataServices;
 using System;
+using System.Data;
 using System.Linq;
 
 namespace restlessmedia.Module.Category.Data
@@ -21,13 +22,13 @@ namespace restlessmedia.Module.Category.Data
     {
       return Query((connection) =>
       {
-        return new ModelCollection<CategoryEntity>(connection.Query<CategoryEntity, FileEntity, CategoryEntity>("dbo.SPListCategories", (category, file) => { category.Thumb = file; return category; }, new { categoryParentId = categoryParentId }, commandType: CommandType.StoredProcedure, splitOn: "TargetEntityId"));
+        return new ModelCollection<CategoryEntity>(connection.Query<CategoryEntity, FileEntity, CategoryEntity>("dbo.SPListCategories", (category, file) => { category.Thumb = file; return category; }, new { categoryParentId }, commandType: CommandType.StoredProcedure, splitOn: "TargetEntityId"));
       });
     }
 
     public CategoryEntity Read(int categoryId)
     {
-      using (IGridReader reader = QueryMultiple("dbo.SPReadCategory", new { categoryId = categoryId }))
+      using (IGridReader reader = QueryMultiple("dbo.SPReadCategory", new { categoryId }))
       {
         CategoryEntity category = reader.Read<CategoryEntity>().SingleOrDefault();
         category.Thumb = reader.Read<FileEntity>().FirstOrDefault();
