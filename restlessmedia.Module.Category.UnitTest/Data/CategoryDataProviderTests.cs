@@ -18,7 +18,7 @@ namespace restlessmedia.Module.Category.UnitTest.Data
       _categoryDataProvider = new CategoryDataProvider(dataContext, _modelDataService);
     }
 
-    [Fact]
+    [Fact(Skip = "untested")]
     public void testing_read()
     {
       dynamic result = new ExpandoObject();
